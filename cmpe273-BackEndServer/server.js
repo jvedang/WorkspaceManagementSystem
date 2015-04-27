@@ -5,6 +5,7 @@ var checkpoint = require('./services/checkpoint');
 var schedule = require('./services/schedule');
 
 var buildingServer = require('./services/buildingServer');
+var clientServer = require('./services/clientServer');
 var MySignIn = require('./services/MySignIn');
 var MySignUp = require('./services/MySignUp');
 var cnn = amqp.createConnection({host:'127.0.0.1'});
@@ -235,6 +236,76 @@ cnn.on('ready', function(){
 
 
 		});
+		
+		
+		cnn.queue('client_queue', function(q){
+			console.log("listening on building_queue");
+			q.subscribe(function(message, headers, deliveryInfo, m){
+				util.log(util.format( deliveryInfo.routingKey, message));
+				util.log("Message: "+JSON.stringify(message));
+				util.log("DeliveryInfo: "+JSON.stringify(deliveryInfo));
+				if(message.service=="search")
+				{
+					clientServer.search_request(message, function(err,res){
+						console.log("listening on");
+						//return index sent
+						cnn.publish(m.replyTo, res, {
+							contentType:'application/json',
+							contentEncoding:'utf-8',
+							correlationId:m.correlationId
+						});
+					});
+				}//if ends
+
+				if(message.service=="add")
+				{
+					clientServer.add_request(message, function(err,res){
+						console.log("listening on");
+						//return index sent
+						cnn.publish(m.replyTo, res, {
+							contentType:'application/json',
+							contentEncoding:'utf-8',
+							correlationId:m.correlationId
+						});
+					});
+				}//if ends
+
+				if(message.service=="edit")
+				{
+					clientServer.edit_request(message, function(err,res){
+						console.log("listening on");
+						//return index sent
+						cnn.publish(m.replyTo, res, {
+							contentType:'application/json',
+							contentEncoding:'utf-8',
+							correlationId:m.correlationId
+						});
+					});
+				}//if ends
+
+				if(message.service=="delete")
+				{
+					clientServer.delete_request(message, function(err,res){
+						console.log("listening on");
+						//return index sent
+						cnn.publish(m.replyTo, res, {
+							contentType:'application/json',
+							contentEncoding:'utf-8',
+							correlationId:m.correlationId
+						});
+					});
+				}//if ends
+			});
+
+		});
+
+		
+		
+		
+		
+		
+		
+		
 
 	});
 });
