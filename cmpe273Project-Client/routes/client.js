@@ -52,7 +52,7 @@ exports.addClient = function(req,res){
 		else 
 		{
 			if(results.code == 200){
-				res.send({"login":"success"});
+				res.render({"login":"success"});
 				
 			}
 			else {    

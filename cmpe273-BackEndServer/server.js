@@ -236,8 +236,8 @@ cnn.on('ready', function(){
 
 
 		});
-		
-		
+
+
 		cnn.queue('client_queue', function(q){
 			console.log("listening on building_queue");
 			q.subscribe(function(message, headers, deliveryInfo, m){
@@ -298,14 +298,5 @@ cnn.on('ready', function(){
 			});
 
 		});
-
-		
-		
-		
-		
-		
-		
-		
-
 	});
 });
