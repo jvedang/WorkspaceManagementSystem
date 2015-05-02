@@ -17,10 +17,14 @@ function search_request(msg, callback){
 				console.log("valid Login");
 				console.log("fetchdata");
 				//res.redirect('/home');
-				console.log("Can I get firstname"+results[0].check_point_id);
-				console.log("Can I get lastname"+results[0].guard_id);
-				res.firstname=results[0].check_point_id;
-				res.lastname=results[0].guard_id;
+				console.log("Can I get firstname"+results[0].client_id_fk);
+				console.log("Can I get lastname"+results[0].address);
+				res.client_id_fks=results[0].client_id_fk;
+				res.guard_id=results[0].address;
+				res.location_latitude=results[0].location_latitude;
+				res.location_longitude=results[0].location_longitude;
+				res.service_fee=results[0].service_fee;
+				res.release_date=results[0].release_date;
 			}
 			else {    
 				console.log("Invalid search");
@@ -36,8 +40,8 @@ function search_request(msg, callback){
 function add_request(msg, callback){
 	
 	var res = {};
-	console.log("In handle request:"+ msg.check_point_id);
-	var addUser="insert into building (building_id,client_id_fk,address,service_fee, release_date) values('"+msg.building_id+"'"+","+"'"+msg.client_id+"'"+","+"'"+msg.address+"'"+","+"'"+msg.service_fee+"'"+","+"'"+msg.release_date+"'"+")";
+	console.log("In handle request:");
+	var addUser="insert into building (building_id,client_id_fk,address,location_latitude,location_longitude,service_fee, release_date) values('NULL"+"'"+","+"'"+msg.client_id+"'"+","+"'"+msg.address+"'"+","+"'"+msg.location_latitude+"'"+","+"'"+msg.location_longitude+"'"+","+"'"+msg.service_fee+"'"+","+"'"+msg.release_date+"'"+")";
 	console.log("Query is:"+addUser);
 	
 	mysql.fetchData(function(err,results){
@@ -58,7 +62,7 @@ function edit_request(msg, callback){
 	
 	var res = {};
 	console.log("In handle request:"+ msg.searchname);
-	var searchUser="insert into building (client_id_fk,address,service_fee, release_date) values('"+msg.client_id+"'"+","+"'"+msg.address+"'"+","+"'"+msg.service_fee+"'"+","+"'"+msg.release_date+"'"+","+")";
+	var searchUser="update building set client_id_fk ="+msg.client_id+",address = "+msg.address+", service_fee = "+msg.service_fee+", release_date ="+msg.release_date+" where building_id = "+msg.building_id;
 	console.log("Query is:"+searchUser);
 	
 	mysql.fetchData(function(err,results){
@@ -71,8 +75,6 @@ function edit_request(msg, callback){
 				console.log("valid Login");
 				console.log("fetchdata");
 				//res.redirect('/home');
-				console.log("Can I get firstname"+results[0].check_point_id);
-				console.log("Can I get lastname"+results[0].guard_id);
 				res.firstname="200";
 				res.lastname="Valid Search";
 			}

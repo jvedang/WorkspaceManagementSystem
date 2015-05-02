@@ -24,9 +24,8 @@ exports.showBuilding = function(req,res){
 				res.send({"login":"Fail"});
 			}
 			else {    
-				console.log("Can I get firstname"+results.check_point_id);
-				console.log("Can I get lastname"+results.guard_id);
-				res.send({"firstname":results.check_point_id,"lastname":results.guard_id});
+				
+				res.send({"client_id_fks":results.client_id_fks,"guard_id":results.guard_id,"location_latitude":results.location_latitude,"location_longitude":results.location_longitude,"service_fee":results.service_fee,"release_date":results.release_date});
 				console.log("valid search");
 			}
 		}  
@@ -38,9 +37,11 @@ exports.addBuilding = function(req,res){
 	var building_id=req.param("building_id");
 	var client_id=req.param("client_id");
 	var address=req.param("address");
+	var location_latitude=req.param("location_latitude");
+	var location_longitude=req.param("location_longitude");
 	var service_fee=req.param("service_fee");
 	var release_date=req.param("release_date");
-    var msg_payload = { "building_id": building_id, "client_id":client_id, "address":address, "service_fee":service_fee, "release_date":release_date, "service": "addBuilding" };
+    var msg_payload = { "building_id": building_id, "client_id":client_id, "address":address, "location_latitude":location_latitude, "location_longitude":location_longitude, "service_fee":service_fee, "release_date":release_date, "service": "addBuilding" };
 	
 	console.log("In POST Request = building_id:"+ building_id+" "+client_id);
 	
@@ -68,14 +69,16 @@ exports.addBuilding = function(req,res){
 
 exports.updateBuilding = function(req,res){
 	console.log("In edit Function");
-	var searchid=req.param("building_id");
+	var building_id=req.param("building_id");
 	var client_id=req.param("client_id");
 	var address=req.param("address");
+	var location_latitude=req.param("location_latitude");
+	var location_longitude=req.param("location_longitude");
 	var service_fee=req.param("service_fee");
 	var release_date=req.param("release_date");
-	var msg_payload = { "searchname":searchid,"client_id":client_id, "address":address, "service_fee":service_fee, "release_date":release_date, "service": "edit" };
+	var msg_payload = { "building_id":building_id,"client_id":client_id, "address":address, "location_latitude":location_latitude, "location_longitude":location_longitude, "service_fee":service_fee, "release_date":release_date, "service": "edit" };
 	
-	console.log("In POST Request = UserName:"+" "+searchid);
+	console.log("In POST Request = UserName:"+" "+building_id);
 	
 	mq_client.make_request('building_queue',msg_payload, function(err,results){
 		
@@ -120,9 +123,7 @@ exports.deleteBuilding = function(req,res){
 				res.send({"login":"Fail"});
 			}
 			else {    
-				console.log("Can I get firstname"+results.check_point_id);
-				console.log("Can I get lastname"+results.guard_id);
-				res.send({"firstname":results.check_point_id,"lastname":results.guard_id});
+				res.send({"login":"success"});
 				console.log("valid search");
 			}
 		}  

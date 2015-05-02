@@ -35,11 +35,12 @@ exports.getClient = function(req,res){
 exports.addClient = function(req,res){
 	console.log("In add Function");
 	var client_id_no=req.param("client_id_no");
+	var user_id_fk=req.param("user_id_fk");
 	var monthly_Service_charge=req.param("monthly_Service_charge");
 	var service_start_date=req.param("service_start_date");
 	var service_end_date=req.param("service_end_date");
 	
-    var msg_payload = { "client_id_no": client_id_no, "monthly_Service_charge":monthly_Service_charge, "service_start_date":service_start_date, "service_end_date":service_end_date, "service": "add" };
+    var msg_payload = { "client_id_no": client_id_no,"user_id_fk": user_id_fk ,"monthly_Service_charge":monthly_Service_charge, "service_start_date":service_start_date, "service_end_date":service_end_date, "service": "add" };
 	
 	console.log("In POST Request = client_id_no:"+ client_id_no+" ");
 	
@@ -67,14 +68,15 @@ exports.addClient = function(req,res){
 
 exports.updateClient = function(req,res){
 	console.log("In edit Function");
-	var searchid=req.param("client_id");
+	var client_id=req.param("client_id");
+	var user_id_fk=req.param("user_id_fk");
 	var client_id_no=req.param("client_id_no");
 	var monthly_Service_charge=req.param("monthly_Service_charge");
 	var service_start_date=req.param("service_start_date");
 	var service_end_date=req.param("service_end_date");
-	var msg_payload = { "searchid":searchid, "client_id_no": client_id_no, "monthly_Service_charge":monthly_Service_charge, "service_start_date":service_start_date, "service_end_date":service_end_date, "service": "edit" };
+	var msg_payload = { "client_id":client_id, "client_id_no": client_id_no, "user_id_fk": user_id_fk ,"monthly_Service_charge":monthly_Service_charge, "service_start_date":service_start_date, "service_end_date":service_end_date, "service": "edit" };
 	
-	console.log("In POST Request = UserName:"+" "+searchid);
+	console.log("In POST Request = UserName:"+" "+client_id);
 	
 	mq_client.make_request('client_queue',msg_payload, function(err,results){
 		

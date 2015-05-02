@@ -4,7 +4,7 @@ function search_request(msg, callback){
 	
 	var res = {};
 	console.log("In handle request:"+ msg.searchname);
-	var searchUser="select client_id_fk,address,location_latitude,location_longitude,service_fee,release_date from building where building_id ='"+msg.searchname+"'";
+	var searchUser="select check_point_id,guard_id,building_id,start_date,end_date from schedule where schedule_id ='"+msg.searchname+"'";
 	console.log("Query is:"+searchUser);
 	
 	mysql.fetchData(function(err,results){
@@ -19,8 +19,11 @@ function search_request(msg, callback){
 				//res.redirect('/home');
 				console.log("Can I get firstname"+results[0].check_point_id);
 				console.log("Can I get lastname"+results[0].guard_id);
-				res.firstname=results[0].check_point_id;
-				res.lastname=results[0].guard_id;
+				res.check_point_id=results[0].check_point_id;
+				res.guard_id=results[0].guard_id;
+				res.building_id=results[0].building_id;
+				res.start_date=results[0].start_date;
+				res.end_date=results[0].end_date;
 			}
 			else {    
 				console.log("Invalid search");
@@ -58,7 +61,7 @@ function edit_request(msg, callback){
 	
 	var res = {};
 	console.log("In handle request:"+ msg.searchname);
-	var searchUser="insert into schedule (check_point_id,guard_id,building_id,start_date,end_date) values('"+msg.check_point_id+"'"+","+"'"+msg.guard_id+"'"+","+"'"+msg.building_id+"'"+","+"'"+msg.start_date+"'"+","+"'"+msg.end_date+"'"+")";
+	var searchUser="update schedule set check_point_id = "+msg.check_point_id+",guard_id = "+msg.guard_id+" ,building_id = " +msg.building_id+ ", start_date = "+msg.start_date+",end_date = "+msg.end_date+"where schedule_id = "+msg.schedule_id;
 
 	console.log("Query is:"+searchUser);
 	
@@ -74,8 +77,8 @@ function edit_request(msg, callback){
 				//res.redirect('/home');
 				console.log("Can I get firstname"+results[0].check_point_id);
 				console.log("Can I get lastname"+results[0].guard_id);
-				res.firstname=results[0].check_point_id;
-				res.lastname=results[0].guard_id;
+				res.code = "200";
+				res.value = "Succes Login";
 			}
 			else {    
 				console.log("Invalid search");
