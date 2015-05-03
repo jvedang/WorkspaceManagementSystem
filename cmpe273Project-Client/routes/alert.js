@@ -32,11 +32,11 @@ exports.create_alert = function(request, response) {
 	var status = request.param("status");
 	var client_id_fk= request.param("client_id_fk");
 	var building_id_fk = request.param("building_id_fk");
-	var guard_id_fk = request.param("guard_id_fk");	
+	var guard_id_fk = request.session.guard_id_fk;	
 	//create session variable
-	request.session.userName=first_name;
-	request.session.email =  email_id;
-	var uid = request.session.email;
+	//request.session.userName=first_name;
+	//request.session.email =  email_id;
+	//var uid = request.session.email;
 
 	var msg_payload = { 
 			"alert": alert1, 

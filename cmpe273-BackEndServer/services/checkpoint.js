@@ -182,6 +182,50 @@ exports.getCheckPointForBuilding = function(message,callback)
 
 exports.getCheckPoint = function(message,callback)
 {
+	var TABLE_NAME = 'guard';
+	var guard_id = message.guard_id;
+
+	var getCheckPointQuery = "select * from "+TABLE_NAME+" "+
+	"where guard_id = "+guard_id+";";
+
+	mysql.fetchData(function(err, results)
+			{
+		if (err) 
+		{
+			throw err;
+		} 
+		else
+		{
+			if (results.length > 0) 
+			{
+				console.log("getting data");
+
+				var response = {
+						statusCode  : 200,
+						statusObject : results,
+						statusMessage : "Valid Data"
+				};
+
+				callback(null, response);
+			}
+			else
+			{
+				console.log("InValid Data");
+
+				var responseError = {
+						statusCode  : 202,
+						statusObject : results,
+						statusMessage : "InValid Data"
+				};
+
+				callback(null, responseError);
+			}
+		}
+			}, getCheckPointQuery);
+};
+
+exports.getCheckPointInfo = function(message,callback)
+{
 	var TABLE_NAME = 'check_point';
 	var check_point_id = message.check_point_id;
 

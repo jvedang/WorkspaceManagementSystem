@@ -135,9 +135,9 @@ exports.getCheckPointForBuilding = function(req, res)
 
 exports.getCheckPoint = function(req, res)
 {
-	var TABLE_NAME = 'check_point';
-	var check_point_id = req.param("check_point_id");
-	var msg_payload = {"check_point_id":check_point_id,"method":"getCheckPoint" };
+	var TABLE_NAME = 'guard';
+	var guard_id = req.param("guard_id");
+	var msg_payload = {"guard_id":guard_id,"method":"getCheckPoint" };
 	console.log(msg_payload+" msg_payload");
 	mq_client.make_request('check_point_queue',msg_payload, function(err,results){
 
@@ -149,6 +149,33 @@ exports.getCheckPoint = function(req, res)
 		{
 			if(results.statusCode == 200){	
 				console.log(results+" results in getCheckPoint");
+				res.send(JSON.stringify(results));
+			}
+			else {    
+
+				console.log("Invalid Login");
+				res.send(JSON.stringify(results));
+			}
+		}  
+	});
+};
+
+exports.getCheckPointInfo = function(req, res)
+{
+	var TABLE_NAME = 'check_point';
+	var check_point_id = req.param("check_point_id");
+	var msg_payload = {"check_point_id":check_point_id,"method":"getCheckPointInfo" };
+	console.log(msg_payload+" msg_payload");
+	mq_client.make_request('check_point_queue',msg_payload, function(err,results){
+
+		console.log(results);
+		if(err){
+			throw err;
+		}
+		else 
+		{
+			if(results.statusCode == 200){	
+				console.log(results+" results in getCheckPointInfo");
 				res.send(JSON.stringify(results));
 			}
 			else {    

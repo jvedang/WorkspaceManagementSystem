@@ -69,6 +69,16 @@ cnn.on('ready', function(){
 					});
 				});
 			}
+			else if(message.method == "getCheckPointInfo")
+			{
+				checkpoint.getCheckPointInfo(message, function(err,res){
+					cnn.publish(m.replyTo, res, {
+						contentType:'application/json',
+						contentEncoding:'utf-8',
+						correlationId:m.correlationId
+					});
+				});
+			}
 		});
 
 
