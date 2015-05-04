@@ -25,6 +25,29 @@ exports.signup= function (request,response)
 	});
 };
 
+exports.list_alert= function (request,response)
+{
+	var msg_payload = {"service":"list_alert"};
+	mq_client.make_request('list_alert_q',msg_payload, function(err,results){
+		if (err) {
+			console.log("ERROR: " + err.message);
+
+		} else {
+			console.log("Success find");
+			if(results.code == 200)
+			{
+				var result = results.value;		// you may need to parse the value
+				console.log("success in getting alert");
+				response.render();				// render something
+			}
+			else
+			{
+				console.log("failure in getting alert");
+			}
+		}
+
+	});
+};
 
 exports.create_alert = function(request, response) {
 	var alert1 = request.param("alert");

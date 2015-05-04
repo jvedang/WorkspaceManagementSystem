@@ -136,7 +136,9 @@ guardProfile.controller( 'AlertController', function($scope,$http,$location){
 	            url: '/getCheckPoint'
 	           		}).success(function(response){
 	           		console.log("We are in init");
-	        $scope.check_point_id=response;
+	        $scope.check_point_id=response.check_point_id;
+	        $scope.building_id_fk=response.building_id_fk;
+	        $scope.client_id_fk=response.client_id_fk;
 	        console.log("Result is "+$scope.check_point_id);		
 	   	    }).error(function(error){
 	        console.log("we are in error!!");
@@ -145,7 +147,7 @@ guardProfile.controller( 'AlertController', function($scope,$http,$location){
 			};
 		/////////////////////////////////
 		$scope.onClickSubmit = function(check_point_id){ $http({
-   				method: 'POST',
+   				method: 'GET',
 	            url: '/checkpoint/getCheckPoint',
 	           	data: {"check_point_id":$scope.check_point_id}
 	           		}).success(function(response){
@@ -162,7 +164,7 @@ guardProfile.controller( 'AlertController', function($scope,$http,$location){
 		////////////
 		$http({
    				method: 'GET',
-	            url: '/alert/get_alert'
+	            url: '/alert/list_alert'
 	           		}).success(function(response){
 	           		console.log("We are in init");
 	        $scope.alertText=response.alert;

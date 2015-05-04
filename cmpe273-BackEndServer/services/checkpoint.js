@@ -185,8 +185,7 @@ exports.getCheckPoint = function(message,callback)
 	var TABLE_NAME = 'guard';
 	var guard_id = message.guard_id;
 
-	var getCheckPointQuery = "select * from "+TABLE_NAME+" "+
-	"where guard_id = "+guard_id+";";
+	var getCheckPointQuery = "select c.buidling_id,c.client_id,c.check_point_id from check_point c,guard g where c.check_point_id = g.check_point_id and g.guard_id"+guard_id+"";
 
 	mysql.fetchData(function(err, results)
 			{
