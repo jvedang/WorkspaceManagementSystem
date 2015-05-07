@@ -4,7 +4,7 @@ var mysqlQuery = require("./dbConnectivity/mysqlQuery");
 function list_alert(msg, callback){
 	var res = {};
 	console.log("In handle request:"+ msg.username);
-	var sqlstmt = "select * from alert";  
+	var sqlstmt = "select * from alert a, building b,client c where b.building_id=a.building_id_fk and c.client_id=a.client_id_fk;";  
 
 	mysqlQuery.execQuery(sqlstmt,function(err, rows, fields){
 		if (err) {
@@ -16,13 +16,38 @@ function list_alert(msg, callback){
 			{
 				console.log("Rows exists");
 				res.code="200";
-				res.value=JSON.stringify(rows);
+				res.value=rows;
 			}
-			callback(null, res);        	
+			callback(null, rows);        	
 		}	
 
 	});	
 }
+
+function get_alert(msg, callback){
+	var res = {};
+	//console.log("In handle request:"+ msg.username);
+	var sqlstmt = "select alert from alert where guard_id_fk = '"+msg.guard_id+"';";  
+	console.log("query for get alert" + sqlstmt);
+	mysqlQuery.execQuery(sqlstmt,function(err, rows, fields){
+		if (err) {
+			// throw err;
+			console.log("Error in db");
+		}else
+		{
+			if(rows.length > 0)
+			{
+				console.log("Rows exists");
+				res.code="200";
+			
+			}
+			console.log(JSON.stringify(rows));
+			callback(null, rows);        	
+		}	
+
+	});	
+}
+
 function create_alert(msg, callback){
 	var res = {};
 	var flag=0;
@@ -46,6 +71,8 @@ function create_alert(msg, callback){
 			console.log("Success in insertion");		
 		}
 	});
-};
+}
 
-exports.handle_request = handle_request;
+exports.create_alert = create_alert;
+exports.list_alert = list_alert;
+exports.get_alert = get_alert;

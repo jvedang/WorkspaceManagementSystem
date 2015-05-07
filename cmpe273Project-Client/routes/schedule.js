@@ -26,7 +26,7 @@ exports.getSchedule = function(req,res){
 			else {    
 				console.log("Can I get firstname"+results.check_point_id);
 				console.log("Can I get lastname"+results.guard_id);
-				res.send({"check_point_id":results.check_point_id,"guard_id":results.guard_id, "building_id":results.building_id, "start_date":results.start_date, "end_date":results.end_date});
+				res.send({"firstname":results.check_point_id,"lastname":results.guard_id});
 				console.log("valid search");
 			}
 		}  
@@ -68,15 +68,10 @@ exports.addSchedule = function(req,res){
 
 exports.updateSchedule = function(req,res){
 	console.log("In edit Function");
-	var check_point_id=req.param("check_point_id");
-	var guard_id=req.param("guard_id");
-	var start_date=req.param("start_date");
-	var end_date=req.param("end_date");
-	var building_id=req.param("building_id");
-	//var searchid=req.param("schedule_id");
-	var msg_payload = {"check_point_id": check_point_id, "guard_id":guard_id, "building_id":building_id, "start_date":start_date, "end_date":end_date, "service": "edit" };
+	var searchid=req.param("schedule_id");
+	var msg_payload = { "searchname":searchid, "service": "edit" };
 	
-	console.log("In POST Request = UserName:"+" "+check_point_id);
+	console.log("In POST Request = UserName:"+" "+searchid);
 	
 	mq_client.make_request('schedule_queue',msg_payload, function(err,results){
 		

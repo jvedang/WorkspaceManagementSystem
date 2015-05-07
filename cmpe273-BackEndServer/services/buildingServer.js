@@ -1,12 +1,12 @@
 var mysql = require('./mysql');
 
 function search_request(msg, callback){
-	
+
 	var res = {};
 	console.log("In handle request herrrrreee:"+ msg.searchBuilding);
-	var searchUser="select client_id_fk,address,location_latitude,location_longitude,service_fee,release_date from building where building_id ='"+msg.searchBuilding+"'";
+	var searchUser="select building_id,building_name,client_id_fk,address,location_latitude,location_longitude,service_fee,release_date from building where client_id_fk ='"+msg.client_id+"'";
 	console.log("Query is:"+searchUser);
-	
+
 	mysql.fetchData(function(err,results){
 		if(err){
 			throw err;
@@ -14,22 +14,13 @@ function search_request(msg, callback){
 		else 
 		{
 			if(results.length > 0){
-				console.log("valid Login");
-				console.log("fetchdata");
-				//res.redirect('/home');
-				console.log("Can I get firstname"+results[0].client_id_fk);
-				console.log("Can I get lastname"+results[0].address);
-				res.client_id_fks=results[0].client_id_fk;
-				res.guard_id=results[0].address;
-				res.location_latitude=results[0].location_latitude;
-				res.location_longitude=results[0].location_longitude;
-				res.service_fee=results[0].service_fee;
-				res.release_date=results[0].release_date;
+				callback(null, results); 
 			}
 			else {    
 				console.log("Invalid search");
-				res.firstname = "401";
-				res.lastname = "Invalid search";
+				res.errorCode = "401";
+				res.errorMessage = "Invalid search";
+				callback(null, results);
 			}
 		}  
 		callback(null, res); 
@@ -38,12 +29,12 @@ function search_request(msg, callback){
 
 
 function add_request(msg, callback){
-	
+
 	var res = {};
-	console.log("In handle request:");
-	var addUser="insert into building (building_id,client_id_fk,address,location_latitude,location_longitude,service_fee, release_date) values('NULL"+"'"+","+"'"+msg.client_id+"'"+","+"'"+msg.address+"'"+","+"'"+msg.location_latitude+"'"+","+"'"+msg.location_longitude+"'"+","+"'"+msg.service_fee+"'"+","+"'"+msg.release_date+"'"+")";
+	console.log("In handle request:"+ msg.check_point_id);
+	var addUser="insert into building (client_id_fk,location_latitude,location_longitude,service_fee, release_date,building_name) values("+msg.client_id+""+","+"'"+msg.latitude+"','"+msg.longitude+"','"+msg.service_fee+"'"+","+"'"+msg.release_date+"','"+msg.building_name+"')";
 	console.log("Query is:"+addUser);
-	
+
 	mysql.fetchData(function(err,results){
 		if(err){
 			throw err;
@@ -59,12 +50,39 @@ function add_request(msg, callback){
 
 
 function edit_request(msg, callback){
+
+	console.log("IN update building function :: "+ msg.building_id);
+	var building_id=msg.building_id;
+	var building_name=msg.building_name;
+	var latitude = msg.latitude;
+	var longitude = msg.longitude;
+	var service_fee=msg.service_fee;
+	var release_date=msg.release_date;
 	
+	var updateBuilding="update building set building_name='"+building_name+"'," +
+			" location_latitude='"+latitude+"', location_longitude='"+longitude+"'," +
+			" service_fee='"+service_fee+"', release_date='"+release_date+"' where building_id="+building_id;
+	
+	console.log("Query is:"+updateBuilding);
+
+	mysql.fetchData(function(err,results){
+		if(err){
+			throw err;
+		}
+		else 
+		{
+			callback(null,results);
+		}  
+	},updateBuilding);
+}
+
+function delete_request(msg, callback){
+
 	var res = {};
 	console.log("In handle request:"+ msg.searchname);
-	var searchUser="update building set client_id_fk ="+msg.client_id+",address = "+msg.address+", service_fee = "+msg.service_fee+", release_date ="+msg.release_date+" where building_id = "+msg.building_id;
+	var searchUser="delete from building where building_id ="+msg.searchname+"";
 	console.log("Query is:"+searchUser);
-	
+
 	mysql.fetchData(function(err,results){
 		if(err){
 			throw err;
@@ -74,9 +92,6 @@ function edit_request(msg, callback){
 			if(results.length > 0){
 				console.log("valid Login");
 				console.log("fetchdata");
-				//res.redirect('/home');
-				res.firstname="200";
-				res.lastname="Valid Search";
 			}
 			else {    
 				console.log("Invalid search");
@@ -88,12 +103,14 @@ function edit_request(msg, callback){
 	},searchUser);
 }
 
-function delete_request(msg, callback){
+function getBuildingDetails(msg, callback){
+
+	var building_id = msg.building_id;
 	
-	var res = {};
-	console.log("In handle request:"+ msg.searchname);
-	var searchUser="delete from building where building_id ='"+msg.searchname+"'";
-	console.log("Query is:"+searchUser);
+	console.log("IN getBuildingDetails, building_id :: "+building_id);
+	
+	var getBuildingDetailsQuery="select building_id,c.client_name,client_id_fk,location_latitude,location_longitude,"+
+			"service_fee,release_date,building_name from building b,client c where b.client_id_fk=c.client_id and building_id="+building_id+";";
 	
 	mysql.fetchData(function(err,results){
 		if(err){
@@ -101,22 +118,36 @@ function delete_request(msg, callback){
 		}
 		else 
 		{
-			if(results.length > 0){
-				console.log("valid Login");
-				console.log("fetchdata");
-				//res.redirect('/home');
-			
-			//	res.firstname=results[0].check_point_id;
-				//res.lastname=results[0].guard_id;
-			}
-			else {    
-				console.log("Invalid search");
-				res.firstname = "401";
-				res.lastname = "Invalid search";
-			}
-		}  
-		callback(null, res); 
-	},searchUser);
+			callback(null,results);
+		}   
+	},getBuildingDetailsQuery);
+}
+
+function clientbuild (msg,callback)
+{
+  var res = {};
+  
+  var qcb = "select building_id,building_name from building where client_id_fk ='"+msg.clientid+"'";
+  
+  mysql.fetchData(function(err,result){
+	  if(err)
+		  {
+		  throw err;
+		  }
+	  else
+		  {
+		  if(result.length>0)
+			  {
+			   callback(null,result);
+			  }
+		  else
+			  {
+			  res.building_id = "Not found";
+				  callback(null,res);
+			  }
+		  }
+	  
+  },qcb);
 }
 
 
@@ -124,3 +155,5 @@ exports.add_request = add_request;
 exports.search_request = search_request;
 exports.edit_request = edit_request;
 exports.delete_request = delete_request;
+exports.getBuildingDetails = getBuildingDetails;
+exports.clientbuild = clientbuild;
